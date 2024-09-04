@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './admin.css';
 import { getOrders, confirmOrder } from "../../data/Order";
-import { Order } from "../../interface/order";
 import OrderTable from "../../components/Admin/OrderTable";
 import AdminBox from "../../components/Admin/AdminBox";
+import { Order } from "../../interface/oderConfirm";
 
 const AdminOrder = () => {
   const [orders, setOrders] = useState<Order[]>([]);
