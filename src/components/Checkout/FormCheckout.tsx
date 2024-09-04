@@ -1,36 +1,46 @@
-import { useSelector } from "react-redux";
-import { cartItemsSelector, cartTotalSelector } from "../../features/Cart/selector";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Order } from "../../interface/order";
-import StorageKeys from "../../constants/storage-keys";
-import { User } from "../../interface/Users";
-import { Link } from "react-router-dom";
-import CheckoutItem from "./checkoutItem";
+import { useSelector } from "react-redux"
+import CheckoutItem from "./checkoutItem"
+import { cartItemsSelector, cartTotalSelector } from "../../features/Cart/selector"
+
+// ///////////////////////
+import { useForm, SubmitHandler } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { Order } from "../../interface/order"
+import StorageKeys from "../../constants/storage-keys"
+import { User } from "../../interface/Users"
+import { Link } from "react-router-dom"
+
+
+
 
 const schema = yup.object({
     email: yup.string().required("Không được bỏ trống email").email("Hãy nhập email hợp lệ"),
-    phone: yup.string().required('Nhập số điện thoại').length(10, 'Số điện thoại phải có 10 chữ số'),
+    phone: yup.string().required('Nhập số điện thoại').min(10, 'Số điện thoại phải có 10 chữ số').max(10, 'Số điện thoại phải có 10 chữ số'),
     address: yup.string().required('Nhập địa chỉ của bạn'),
     name: yup.string().required('Họ và tên'),
     user_id: yup.string().optional(),
-    order_status: yup.number().required(),
+    order_status: yup.number().optional(),
     total_amount: yup.number().optional(),
-    type_payment: yup.number().required()
+    type_payment: yup.number().optional()
 }).required();
 
-interface FormOrderProps {
+
+interface FormOrder {
     onSubmit: (data: Order) => void;
 }
+const FormCheckout = ({ onSubmit }: FormOrder) => {
+    const total_amount  = useSelector(cartTotalSelector)
 
-const FormCheckout = ({ onSubmit }: FormOrderProps) => {
-    const total_amount = useSelector(cartTotalSelector);
-    const user = localStorage.getItem(StorageKeys.USER);
-    const userData: Partial<User> = user ? JSON.parse(user) : {};
+    const user = localStorage.getItem(StorageKeys.USER)
+    let userData: Partial<User> = {};
+    if (user) {
+        userData = JSON.parse(user)
+    }
 
-    const {
-        register,
+
+
+    const { register,
         handleSubmit,
         formState: { errors }
     } = useForm<Order>({
@@ -45,69 +55,87 @@ const FormCheckout = ({ onSubmit }: FormOrderProps) => {
             type_payment: 1
         },
         resolver: yupResolver(schema),
-    });
+    })
 
     const dataOrder: SubmitHandler<Order> = (data) => {
-        onSubmit(data);
-    };
+        onSubmit(data)
+    }
 
-    const itemCheckouts = useSelector(cartItemsSelector);
-    const totalCart = useSelector(cartTotalSelector);
+    const itemCheckouts = useSelector(cartItemsSelector)
+  const totalCart = useSelector(cartTotalSelector)
 
     return (
         <form onSubmit={handleSubmit(dataOrder)} className="pay grid-2 bb">
+
             <div className="checkout-left">
-                <h1>Thông tin người đặt hàng</h1>
-                <div className="form-group">
-                    <label htmlFor="name">Họ tên</label>
-                    <input {...register("name")} id="name" className="input" placeholder="Họ tên" type="text" />
-                    <small className="error-message">{errors.name?.message}</small>
+
+                <div >
+                    <h1>Thông tin người đặt hàng</h1>
+                    <div className="form">
+                        <input {...register("name", { required: true })} title="Điền họ tên" className="input" placeholder="Họ tên" type="text" />
+                        <span className="input-border"></span>
+                        <small className="">{errors.name?.message}</small>
+
+                    </div>
+
+                    <div className=" mt-6 grid-60-30-gap">
+                        <div className="form">
+                            <input {...register("email", { required: true })} className="input" placeholder="Email" name="email" type="text" />
+                            <span className="input-border"></span>
+                            <small className="">{errors.email?.message}</small>
+
+                        </div>
+                        <div className="form ">
+                            <input {...register("phone", { required: true })} className="input" placeholder="Số điện thoại" name="phone" type="number" />
+                            <span className="input-border"></span>
+                            <small className="">{errors.phone?.message}</small>
+
+                        </div>
+                    </div>
+
+                    <div className="form mt-6">
+                        <input {...register("address", { required: true })} className="input" placeholder="Địa chỉ" name="address" type="text" />
+                        <span className="input-border"></span>
+                        <small className="">{errors.address?.message}</small>
+
+                    </div>
+
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input {...register("email")} id="email" className="input" placeholder="Email" type="email" />
-                    <small className="error-message">{errors.email?.message}</small>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="phone">Số điện thoại</label>
-                    <input {...register("phone")} id="phone" className="input" placeholder="Số điện thoại" type="tel" />
-                    <small className="error-message">{errors.phone?.message}</small>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="address">Địa chỉ</label>
-                    <input {...register("address")} id="address" className="input" placeholder="Địa chỉ" type="text" />
-                    <small className="error-message">{errors.address?.message}</small>
-                </div>
             </div>
+
+            {/* <app-address></app-address> */}
 
             <div className="checkout-right bl mb-5">
                 <h1>Giỏ hàng</h1>
                 <div id="checkout">
+
                     {itemCheckouts.map((itemCheckout) => (
                         <CheckoutItem key={itemCheckout._id} itemCheckout={itemCheckout} />
+
                     ))}
+
                 </div>
-                <div className="total grid-2">
+                <div className="tong grid-2">
                     <span>Tổng</span>
                     <span>{totalCart}</span>
                 </div>
                 <div className="w-full flex-center">
                     {user ? (
-                        <button type="submit" className="add mt-6 btn-primary">
+                        <button type="submit" className="add mt-6 btn-primary" style={{ width: "fit-content", margin: "0 auto" }}>
                             Đặt hàng
                         </button>
+
                     ) : (
-                        <Link to="/sign-in" className="add mt-6 btn-primary">
+                        <Link to={'/sign-in'}  className="add mt-6 btn-primary" style={{ width: "fit-content" }}>
                             Đăng nhập để mua hàng
                         </Link>
+
                     )}
                 </div>
             </div>
         </form>
-    );
-};
+    )
+}
 
-export default FormCheckout;
+export default FormCheckout

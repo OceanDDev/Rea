@@ -30,7 +30,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onConfirmOrder }) => {
               <td>{order.email}</td>
               <td>{order.address}</td>
               <td>{order.phone}</td>
-              <td>{new Date(order.order_date).toLocaleDateString()}</td>
+              <td>{new Date().toLocaleDateString()}</td>
               <td>{order.total_amount?.toLocaleString() || 'N/A'} VND</td>
               <td>{order.type_payment === 1 ? "Thanh Toán Online" : "Thanh Toán Khi Nhận Hàng"}</td>
               <td>{order.order_status === 1 ? "Chưa giao" : "Đã giao"}</td>
