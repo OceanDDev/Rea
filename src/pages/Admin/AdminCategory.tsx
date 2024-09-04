@@ -131,14 +131,14 @@ const AdminCategory = () => {
                 <li><a className="active" href="#">Home</a></li>
               </ul>
             </div>
-            <button className="btn-download" onClick={() => setEditingCategory({ _id: '', name: '', img:'', home: false, stt: 0, content: '', mota: '' })}>
+            <button className="btn-download" onClick={() => setEditingCategory({ _id: '', name: '', home: false, stt: 0, content: '', mota: '' })}>
               <span className="text">Thêm Danh Mục</span>
             </button>
           </div>
 
           
           <div className="table-data">
-            <div className="order">
+            <div className="order"> 
               <div className="head">
                 <h3>Danh Mục Gần Đây</h3>
                 <i className="bx bx-search" />
