@@ -7,6 +7,7 @@ export interface Order {
   total_amount?: number;
   type_payment: number;
   order_status: number;
+  order_date: Date
 }
   
   

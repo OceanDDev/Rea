@@ -40,7 +40,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onConfirmOrder }) => {
                     className="confirm-btn"
                     onClick={(e) => {
                       e.preventDefault(); // Ngăn chặn hành vi mặc định
-                      onConfirmOrder(order._id!);
+                      onConfirmOrder(order.user_id!);
                     }}
                   >
                     Xác Nhận
