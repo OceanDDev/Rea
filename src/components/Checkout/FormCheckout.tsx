@@ -15,9 +15,9 @@ const schema = yup.object({
     address: yup.string().required('Nhập địa chỉ của bạn'),
     name: yup.string().required('Họ và tên'),
     user_id: yup.string().optional(),
-    order_status: yup.number().required(), // Bắt buộc
+    order_status: yup.number().required(),
     total_amount: yup.number().optional(),
-    type_payment: yup.number().required() // Bắt buộc
+    type_payment: yup.number().required()
 }).required();
 
 interface FormOrderProps {

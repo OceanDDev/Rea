@@ -1,14 +1,13 @@
 export interface Order {
-    _id: string;
-    user_id?: string;
-    order_status: number; // Không thể là undefined
-    total_amount?: number;
-    type_payment: number; // Không thể là undefined
-    email: string;
-    name: string;
-    phone: string;
-    address: string;
-  }
+  user_id?: string;
+  name: string;
+  email: string;
+  address: string;
+  phone: string;
+  total_amount?: number;
+  type_payment: number;
+  order_status: number;
+}
   
   
 
