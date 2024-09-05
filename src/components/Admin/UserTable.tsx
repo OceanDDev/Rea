@@ -3,12 +3,16 @@ import { User } from '../../interface/Users';
 
 interface UserTableProps {
   users: User[];
-  onEdit: (user: User) => void;
-  onDelete: (userId: string) => void;
+  onEdit: (user: User) => void;  
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users  }) => {
-  console.log('Users:', users); // Kiểm tra dữ liệu
+const UserTable: React.FC<UserTableProps> = ({ users, onEdit }) => {
+  console.log('Users:', users); 
+
+  const handleRoleChange = (user: User, newRole: number) => {
+    const updatedUser = { ...user, role: newRole };  
+    onEdit(updatedUser); 
+  };
 
   return (
     <table>
@@ -25,8 +29,15 @@ const UserTable: React.FC<UserTableProps> = ({ users  }) => {
             <tr key={user._id}>
               <td>{user.name || 'N/A'}</td>
               <td>{user.email || 'N/A'}</td>
-              <td>{user.role === 2 ? "Admin" : "User"}</td>
-              
+              <td>
+                <select style={{width: '100px'}}
+                  value={user.role}  
+                  onChange={(e) => handleRoleChange(user, Number(e.target.value))} 
+                >
+                  <option value={1}>User</option>
+                  <option value={2}>Admin</option>
+                </select>
+              </td>
             </tr>
           ))
         ) : (

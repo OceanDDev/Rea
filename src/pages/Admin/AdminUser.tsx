@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './admin.css';
-import { addUser, deleteUser, getuser, updateUser } from "../../data/User";
+import { getuser, updateUser } from "../../data/User";
 import { User } from "../../interface/Users";
-import UserForm from "../../components/Admin/UserForm";
 import UserTable from "../../components/Admin/UserTable";
 
 const AdminUser = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,33 +21,12 @@ const AdminUser = () => {
     fetchUsers();
   }, []);
 
-  const handleEdit = (user: User) => {
-    setEditingUser(user);
-  };
-
-  const handleSave = async (user: User) => {
+  const handleEdit = async (user: User) => {
     try {
-      if (user._id) {
-        // Cập nhật người dùng hiện có
-        await updateUser(user._id, user);
-        setUsers(users.map(u => u._id === user._id ? user : u));
-      } else {
-        // Thêm người dùng mới
-        const { data: newUser } = await addUser(user);
-        setUsers([...users, newUser]);
-      }
-      setEditingUser(null);
+      await updateUser(user._id, user);  // Cập nhật role của user
+      setUsers(users.map(u => u._id === user._id ? user : u));
     } catch (error) {
-      console.error("Error saving user", error);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteUser(id);
-      setUsers(users.filter((user) => user._id !== id));
-    } catch (error) {
-      console.error("Error deleting user", error);
+      console.error("Error updating user role", error);
     }
   };
 
@@ -62,7 +39,7 @@ const AdminUser = () => {
   return (
     <div>
       <section id="sidebar">
-      <Link to="/" className="brand">
+        <Link to="/" className="brand">
           <i className="bx bxs-smile" />
           <span className="text">Ipun Admin</span>
         </Link>
@@ -86,11 +63,11 @@ const AdminUser = () => {
             </Link>
           </li>
           <li>
-  <Link to="/admin/order">
-    <i className="bx bxs-package" />
-    <span className="text">Đơn hàng</span>
-  </Link>
-</li>
+            <Link to="/admin/order">
+              <i className="bx bxs-package" />
+              <span className="text">Đơn hàng</span>
+            </Link>
+          </li>
           <li>
             <a href="#" onClick={handleLogout}>
               <i className="bx bxs-log-out" />
@@ -111,8 +88,6 @@ const AdminUser = () => {
               </button>
             </div>
           </form>
-          <input type="checkbox" id="switch-mode" hidden />
-          <label htmlFor="switch-mode" className="switch-mode" />
           <a href="#" className="notification">
             <i className="bx bxs-bell" />
             <span className="num">8</span>
@@ -131,9 +106,6 @@ const AdminUser = () => {
                 <li><a className="active" href="#">Home</a></li>
               </ul>
             </div>
-            <button className="btn-download" onClick={() => setEditingUser({ _id: '', name: '', email: '', pass: '', address: '', phone: '', role: 0 })}>
-              <span className="text">Thêm Người Dùng</span>
-            </button>
           </div>
           <div className="table-data">
             <div className="order">
@@ -142,17 +114,9 @@ const AdminUser = () => {
                 <i className="bx bx-search" />
                 <i className="bx bx-filter" />
               </div>
-              {editingUser && (
-                <UserForm
-                  user={editingUser}
-                  onSave={handleSave}
-                  onCancel={() => setEditingUser(null)}
-                />
-              )}
               <UserTable
                 users={users}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+                onEdit={handleEdit}  // Chỉ thực hiện cập nhật role
               />
             </div>
           </div>
