@@ -8,7 +8,7 @@ interface OrderTableProps {
 
 const OrderTable: React.FC<OrderTableProps> = ({ orders, onConfirmOrder }) => {
   return (
-    <table className="order-table">
+    <table >
       <thead>
         <tr>
           <th>Tên Khách Hàng</th>
@@ -26,7 +26,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onConfirmOrder }) => {
         {orders.length > 0 ? (
           orders.map((order, index) => (
             <tr key={order.user_id + '-' + index}>
-              <td>{order.name}</td>
+              <td >{order.name}</td>
               <td>{order.email}</td>
               <td>{order.address}</td>
               <td>{order.phone}</td>
